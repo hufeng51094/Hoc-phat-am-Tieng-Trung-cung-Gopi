@@ -31,6 +31,11 @@
       margin: 0 0 12px;
       color: #2d4cc8;
     }
+    .helper {
+      color: #4a6cf7;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
     .actions {
       display: flex;
       gap: 10px;
@@ -40,21 +45,23 @@
     .actions button {
       margin-top: 0;
     }
-    .suggestions {
+    .candidate-list {
       margin-top: 12px;
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
     }
-    .suggestions button {
+    .candidate-item {
       background: #eef3ff;
       color: #1d3d9b;
       border: 1px solid #cfe0ff;
       padding: 8px 12px;
       font-size: 16px;
-      margin: 0;
+      border-radius: 8px;
+      cursor: pointer;
+      min-width: 44px;
     }
-    .suggestions button:hover {
+    .candidate-item:hover {
       background: #dfeaff;
     }
     .output-chinese {
@@ -63,6 +70,11 @@
       color: #1d3d9b;
       font-weight: bold;
       min-height: 48px;
+    }
+    .hint {
+      margin-top: 8px;
+      color: #666;
+      font-size: 13px;
     }
   </style>
 </head>
@@ -76,15 +88,17 @@
   </div>
 
   <div class="ime-box">
-    <h3>⌨️ Gõ Pinyin ra chữ Hán (IME kiểu đơn giản)</h3>
-    <input id="pinyinInput" type="text" placeholder="Ví dụ: ni hao / ni3 hao3 / nǐ hǎo" />
+    <h3>⌨️ IME tiếng Trung nâng cao</h3>
+    <div class="helper">Gõ: nihao, ni hao, xiexie, woaini. Chọn bằng phím 1-9.</div>
+    <input id="pinyinInput" type="text" placeholder="Ví dụ: nihao hoặc ni hao" />
     <div class="actions">
-      <button onclick="convertIme()">Chuyển chữ Hán</button>
+      <button onclick="convertAdvancedIme()">Chuyển chữ Hán</button>
       <button onclick="speakConvertedText()">Phát âm</button>
       <button onclick="clearIme()">Xóa</button>
     </div>
-    <div class="suggestions" id="suggestions"></div>
+    <div class="candidate-list" id="candidateList"></div>
     <div class="output-chinese" id="outputChinese"></div>
+    <div class="hint">Ví dụ: nihao → 你好, xiexie → 谢谢, woaini → 我爱你</div>
   </div>
 
   <table>
@@ -113,42 +127,58 @@
 
   <script src="https://cdn.jsdelivr.net/npm/pinyin-pro@3.26.0/dist/index.js"></script>
   <script>
-    const commonPinyinMap = {
-      "ni hao": "你好",
-      "ni3 hao3": "你好",
-      "nǐ hǎo": "你好",
-      "xue xi": "学习",
-      "xué xí": "学习",
-      "zai jian": "再见",
-      "zài jiàn": "再见",
-      "wo ai ni": "我爱你",
-      "wǒ ài nǐ": "我爱你",
-      "ma": "吗",
-      "shi": "是",
-      "ming tian": "明天",
-      "mingtian": "明天",
-      "jin tian": "今天",
-      "zuo tian": "昨天",
-      "hao": "好",
-      "xie xie": "谢谢",
-      "xiè xie": "谢谢",
-      "ta": "他",
-      "ta men": "他们",
-      "ren": "人",
-      "zhong guo": "中国",
-      "zhōng guó": "中国",
-      "yin yue": "音乐",
-      "diannao": "电脑",
-      "shang ke": "上课",
-      "xia ke": "下课",
-      "laoshi": "老师",
-      "gaoxing": "高兴",
-      "jia you": "加油"
+    const advancedDictionary = {
+      'nihao': ['你好', '你好吗'],
+      'ni hao': ['你好', '你好吗'],
+      'xiexie': ['谢谢'],
+      'xie xie': ['谢谢'],
+      'woaini': ['我爱你'],
+      'wo ai ni': ['我爱你'],
+      'zaijian': ['再见'],
+      'zai jian': ['再见'],
+      'laoshi': ['老师'],
+      'dao': ['到', '倒'],
+      'shangke': ['上课'],
+      'shang ke': ['上课'],
+      'xiake': ['下课'],
+      'xia ke': ['下课'],
+      'gaoxing': ['高兴'],
+      'jia you': ['加油'],
+      'mingtian': ['明天'],
+      'ming tian': ['明天'],
+      'jin tian': ['今天'],
+      'zuo tian': ['昨天'],
+      'zhongguo': ['中国'],
+      'zhong guo': ['中国'],
+      'yin yue': ['音乐'],
+      'diannao': ['电脑'],
+      'ta men': ['他们'],
+      'ren': ['人'],
+      'shi': ['是'],
+      'ma': ['吗'],
+      'hao': ['好'],
+      'nimen': ['你们'],
+      'wo': ['我'],
+      'ni': ['你', '泥', '妮', '呢', '尼'],
+      'hao': ['好', '号', '毫', '耗'],
+      'xie': ['写', '些', '谢', '斜', '鞋'],
+      'wo': ['我', '窝', '握'],
+      'ai': ['爱', '哀', '矮'],
+      'zai': ['在', '再', '灾'],
+      'jian': ['见', '间', '件', '建'],
+      'shi': ['是', '十', '事', '师'],
+      'shang': ['上', '商', '赏'],
+      'ke': ['可', '课', '克', '客'],
+      'lao': ['老', '捞', '牢'],
+      'xin': ['新', '心', '信'],
+      'zhong': ['中', '钟', '重'],
+      'guo': ['国', '果', '过']
     };
 
     const pinyinInput = document.getElementById('pinyinInput');
-    const suggestionsEl = document.getElementById('suggestions');
+    const candidateListEl = document.getElementById('candidateList');
     const outputEl = document.getElementById('outputChinese');
+    let currentCandidates = [];
 
     function normalizeInput(value) {
       return value
@@ -160,89 +190,147 @@
         .trim();
     }
 
-    function getSuggestions(value) {
-      const raw = normalizeInput(value);
-      if (!raw) return [];
+    function getExactMatch(raw) {
+      const clean = normalizeInput(raw);
+      if (!clean) return [];
 
-      const keys = Object.keys(commonPinyinMap);
-      const matches = keys.filter(key => key.startsWith(raw) || raw.startsWith(key));
-      const result = matches.slice(0, 8).map(key => commonPinyinMap[key]);
-      return [...new Set(result)];
+      if (advancedDictionary[clean]) {
+        return advancedDictionary[clean];
+      }
+
+      const spaceLess = clean.replace(/\s+/g, '');
+      if (advancedDictionary[spaceLess]) {
+        return advancedDictionary[spaceLess];
+      }
+
+      return [];
     }
 
-    function renderSuggestions(items) {
-      if (!items.length) {
-        suggestionsEl.innerHTML = '';
+    function getCandidates(raw) {
+      const clean = normalizeInput(raw);
+      if (!clean) return [];
+
+      const exact = getExactMatch(clean);
+      if (exact.length) return exact;
+
+      const tokens = clean.split(/\s+/).filter(Boolean);
+      if (tokens.length > 1) {
+        const combined = tokens.join(' ');
+        const phraseCandidates = getExactMatch(combined);
+        if (phraseCandidates.length) return phraseCandidates;
+      }
+
+      const prefixMatches = Object.keys(advancedDictionary)
+        .filter(key => key.startsWith(clean) || clean.startsWith(key) || key.replace(/\s+/g, '').startsWith(clean.replace(/\s+/g, '')))
+        .slice(0, 8);
+
+      if (prefixMatches.length) {
+        const result = [];
+        prefixMatches.forEach(key => {
+          advancedDictionary[key].forEach(item => result.push(item));
+        });
+        return [...new Set(result)].slice(0, 9);
+      }
+
+      if (tokens.length > 1) {
+        const built = tokens.map(token => {
+          const arr = advancedDictionary[token] || [token];
+          return arr[0];
+        }).join('');
+        return built ? [built] : [];
+      }
+
+      const single = advancedDictionary[clean];
+      return single ? single : [];
+    }
+
+    function renderCandidates(items) {
+      currentCandidates = items.slice(0, 9);
+      candidateListEl.innerHTML = '';
+
+      if (!currentCandidates.length) {
         return;
       }
 
-      suggestionsEl.innerHTML = items.map(item => `
-        <button type="button" data-value="${item}">${item}</button>
-      `).join('');
-
-      suggestionsEl.querySelectorAll('button').forEach(btn => {
-        btn.addEventListener('click', () => {
-          pinyinInput.value = btn.dataset.value;
-          outputEl.textContent = btn.dataset.value;
-          speakWord(btn.dataset.value);
-        });
+      currentCandidates.forEach((item, index) => {
+        const button = document.createElement('button');
+        button.className = 'candidate-item';
+        button.type = 'button';
+        button.textContent = `${index + 1}. ${item}`;
+        button.addEventListener('click', () => applyCandidate(item));
+        candidateListEl.appendChild(button);
       });
     }
 
-    function convertIme() {
-      const raw = normalizeInput(pinyinInput.value);
-      if (!raw) {
-        outputEl.textContent = 'Vui lòng nhập pinyin';
-        suggestionsEl.innerHTML = '';
-        return;
-      }
+    function applyCandidate(value) {
+      outputEl.textContent = value;
+      speakWord(value);
+    }
 
-      let result = commonPinyinMap[raw] || '';
+    function convertAdvancedIme() {
+      const raw = pinyinInput.value;
+      const normalized = normalizeInput(raw);
+      let result = getCandidates(normalized);
 
-      if (!result && window.pinyinPro && typeof window.pinyinPro.convert === 'function') {
+      if (!result.length && window.pinyinPro && typeof window.pinyinPro.convert === 'function') {
         try {
-          result = window.pinyinPro.convert(raw) || '';
+          const libValue = window.pinyinPro.convert(normalized) || '';
+          if (libValue) {
+            result = [libValue];
+          }
         } catch (err) {
-          result = '';
+          result = [];
         }
       }
 
-      const suggestions = getSuggestions(raw);
-      if (!result && suggestions.length) {
-        result = suggestions[0];
+      if (!result.length) {
+        const tokens = normalized.split(/\s+/).filter(Boolean);
+        if (tokens.length) {
+          const built = tokens.map(token => {
+            const list = advancedDictionary[token] || [token];
+            return list[0];
+          }).join('');
+          if (built) result = [built];
+        }
       }
 
-      outputEl.textContent = result || 'Không có kết quả';
-      renderSuggestions(suggestions.length ? suggestions : []);
+      outputEl.textContent = result[0] || 'Không có kết quả';
+      renderCandidates(result);
     }
 
     function clearIme() {
       pinyinInput.value = '';
       outputEl.textContent = '';
-      suggestionsEl.innerHTML = '';
+      candidateListEl.innerHTML = '';
+      currentCandidates = [];
     }
 
     function speakConvertedText() {
       const text = outputEl.textContent.trim();
-      if (!text || text === 'Vui lòng nhập pinyin' || text === 'Không có kết quả') return;
+      if (!text || text === 'Không có kết quả') return;
       speakWord(text);
     }
 
     pinyinInput.addEventListener('input', () => {
-      const raw = pinyinInput.value.trim();
-      if (!raw) {
-        suggestionsEl.innerHTML = '';
+      const raw = pinyinInput.value;
+      const normalized = normalizeInput(raw);
+      if (!normalized) {
+        candidateListEl.innerHTML = '';
         outputEl.textContent = '';
         return;
       }
 
-      const suggestions = getSuggestions(raw);
-      renderSuggestions(suggestions);
+      const result = getCandidates(normalized);
+      renderCandidates(result);
+      if (result.length) {
+        outputEl.textContent = result[0];
+      }
     });
 
-    pinyinInput.addEventListener('keydown', (event) => {
-      if (event.key === 'Enter') {
-        convertIme();
+    document.addEventListener('keydown', (event) => {
+      const key = Number(event.key);
+      if (key >= 1 && key <= 9 && currentCandidates[key - 1]) {
+        applyCandidate(currentCandidates[key - 1]);
       }
     });
 
