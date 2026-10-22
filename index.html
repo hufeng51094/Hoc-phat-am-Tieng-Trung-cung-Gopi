@@ -7,7 +7,7 @@
     body { font-family: Arial, sans-serif; background: #f0f4ff; margin: 20px; color: #333; }
     h2 { color: #4a6cf7; text-align:center; }
     .search-box { width: 70%; margin: 0 auto; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-    textarea { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc; font-size: 16px; }
+    textarea, input { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc; font-size: 16px; box-sizing: border-box; }
     button { background: #4a6cf7; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; margin-top:10px; }
     button:hover { background: #3a56c7; }
     #result { margin-top: 12px; font-size:18px; }
@@ -17,19 +17,76 @@
     th { background: #4a6cf7; color: white; }
     td button { background: none; border: none; font-size: 16px; cursor: pointer; }
     td button:hover { color: #4a6cf7; }
+
+    .ime-box {
+      width: 70%;
+      margin: 24px auto 0;
+      background: #f8faff;
+      border: 1px solid #dfe8ff;
+      border-radius: 12px;
+      padding: 18px;
+      box-sizing: border-box;
+    }
+    .ime-box h3 {
+      margin: 0 0 12px;
+      color: #2d4cc8;
+    }
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+    .actions button {
+      margin-top: 0;
+    }
+    .suggestions {
+      margin-top: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .suggestions button {
+      background: #eef3ff;
+      color: #1d3d9b;
+      border: 1px solid #cfe0ff;
+      padding: 8px 12px;
+      font-size: 16px;
+      margin: 0;
+    }
+    .suggestions button:hover {
+      background: #dfeaff;
+    }
+    .output-chinese {
+      margin-top: 14px;
+      font-size: 34px;
+      color: #1d3d9b;
+      font-weight: bold;
+      min-height: 48px;
+    }
   </style>
 </head>
 <body>
   <h2>🐷💖LUYỆN PHÁT ÂM TIẾNG TRUNG CÙNG GOPI🐱💖</h2>
 
-  <!-- Khung nhập + kết quả -->
   <div class="search-box">
     <textarea id="textInput" rows="3" placeholder="请输入中文词或句子..."></textarea>
     <button onclick="processInput()">发音 + 翻译</button>
     <div id="result"></div>
   </div>
 
-  <!-- Bảng nguyên âm (Pinyin Vowels) -->
+  <div class="ime-box">
+    <h3>⌨️ Gõ Pinyin ra chữ Hán (IME kiểu đơn giản)</h3>
+    <input id="pinyinInput" type="text" placeholder="Ví dụ: ni hao / ni3 hao3 / nǐ hǎo" />
+    <div class="actions">
+      <button onclick="convertIme()">Chuyển chữ Hán</button>
+      <button onclick="speakConvertedText()">Phát âm</button>
+      <button onclick="clearIme()">Xóa</button>
+    </div>
+    <div class="suggestions" id="suggestions"></div>
+    <div class="output-chinese" id="outputChinese"></div>
+  </div>
+
   <table>
     <tr><th colspan="6">🔤 Nguyên âm (Vowels)</th></tr>
     <tr><th>Âm</th><th>Chữ Hán</th><th>Pinyin</th><th>Thanh điệu</th><th>Nghĩa</th><th>Nghe</th></tr>
@@ -41,7 +98,6 @@
     <tr><td>ü</td><td>女</td><td>nǚ</td><td>Thanh 3 (trũng)</td><td>nữ</td><td><button onclick="speakWord('女')">🔊</button></td></tr>
   </table>
 
-  <!-- Bảng phụ âm (Pinyin Consonants) -->
   <table>
     <tr><th colspan="6">🗣️ Phụ âm (Consonants)</th></tr>
     <tr><th>Âm</th><th>Chữ Hán</th><th>Pinyin</th><th>Thanh điệu</th><th>Nghĩa</th><th>Nghe</th></tr>
@@ -55,19 +111,151 @@
     <tr><td>l</td><td>老师</td><td>lǎoshī</td><td>Thanh 3 + Thanh 1</td><td>giáo viên</td><td><button onclick="speakWord('老师')">🔊</button></td></tr>
   </table>
 
+  <script src="https://cdn.jsdelivr.net/npm/pinyin-pro@3.26.0/dist/index.js"></script>
   <script>
+    const commonPinyinMap = {
+      "ni hao": "你好",
+      "ni3 hao3": "你好",
+      "nǐ hǎo": "你好",
+      "xue xi": "学习",
+      "xué xí": "学习",
+      "zai jian": "再见",
+      "zài jiàn": "再见",
+      "wo ai ni": "我爱你",
+      "wǒ ài nǐ": "我爱你",
+      "ma": "吗",
+      "shi": "是",
+      "ming tian": "明天",
+      "mingtian": "明天",
+      "jin tian": "今天",
+      "zuo tian": "昨天",
+      "hao": "好",
+      "xie xie": "谢谢",
+      "xiè xie": "谢谢",
+      "ta": "他",
+      "ta men": "他们",
+      "ren": "人",
+      "zhong guo": "中国",
+      "zhōng guó": "中国",
+      "yin yue": "音乐",
+      "diannao": "电脑",
+      "shang ke": "上课",
+      "xia ke": "下课",
+      "laoshi": "老师",
+      "gaoxing": "高兴",
+      "jia you": "加油"
+    };
+
+    const pinyinInput = document.getElementById('pinyinInput');
+    const suggestionsEl = document.getElementById('suggestions');
+    const outputEl = document.getElementById('outputChinese');
+
+    function normalizeInput(value) {
+      return value
+        .trim()
+        .toLowerCase()
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/ü/g, 'v')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    function getSuggestions(value) {
+      const raw = normalizeInput(value);
+      if (!raw) return [];
+
+      const keys = Object.keys(commonPinyinMap);
+      const matches = keys.filter(key => key.startsWith(raw) || raw.startsWith(key));
+      const result = matches.slice(0, 8).map(key => commonPinyinMap[key]);
+      return [...new Set(result)];
+    }
+
+    function renderSuggestions(items) {
+      if (!items.length) {
+        suggestionsEl.innerHTML = '';
+        return;
+      }
+
+      suggestionsEl.innerHTML = items.map(item => `
+        <button type="button" data-value="${item}">${item}</button>
+      `).join('');
+
+      suggestionsEl.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('click', () => {
+          pinyinInput.value = btn.dataset.value;
+          outputEl.textContent = btn.dataset.value;
+          speakWord(btn.dataset.value);
+        });
+      });
+    }
+
+    function convertIme() {
+      const raw = normalizeInput(pinyinInput.value);
+      if (!raw) {
+        outputEl.textContent = 'Vui lòng nhập pinyin';
+        suggestionsEl.innerHTML = '';
+        return;
+      }
+
+      let result = commonPinyinMap[raw] || '';
+
+      if (!result && window.pinyinPro && typeof window.pinyinPro.convert === 'function') {
+        try {
+          result = window.pinyinPro.convert(raw) || '';
+        } catch (err) {
+          result = '';
+        }
+      }
+
+      const suggestions = getSuggestions(raw);
+      if (!result && suggestions.length) {
+        result = suggestions[0];
+      }
+
+      outputEl.textContent = result || 'Không có kết quả';
+      renderSuggestions(suggestions.length ? suggestions : []);
+    }
+
+    function clearIme() {
+      pinyinInput.value = '';
+      outputEl.textContent = '';
+      suggestionsEl.innerHTML = '';
+    }
+
+    function speakConvertedText() {
+      const text = outputEl.textContent.trim();
+      if (!text || text === 'Vui lòng nhập pinyin' || text === 'Không có kết quả') return;
+      speakWord(text);
+    }
+
+    pinyinInput.addEventListener('input', () => {
+      const raw = pinyinInput.value.trim();
+      if (!raw) {
+        suggestionsEl.innerHTML = '';
+        outputEl.textContent = '';
+        return;
+      }
+
+      const suggestions = getSuggestions(raw);
+      renderSuggestions(suggestions);
+    });
+
+    pinyinInput.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        convertIme();
+      }
+    });
+
     async function processInput() {
       const text = document.getElementById('textInput').value.trim();
       if (!text) return;
 
-      // Phát âm tiếng Trung
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = 'zh-CN';
       speechSynthesis.speak(utterance);
 
-      let translationText = "";
+      let translationText = '';
 
-      // Dịch nghĩa tiếng Việt
       try {
         const transResponse = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=zh|vi`);
         const transData = await transResponse.json();
@@ -75,7 +263,7 @@
           translationText = transData.responseData.translatedText;
         }
       } catch (err) {
-        translationText = "(không dịch được)";
+        translationText = '(không dịch được)';
       }
 
       document.getElementById('result').innerHTML = `
