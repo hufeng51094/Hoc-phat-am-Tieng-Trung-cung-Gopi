@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>🐷💖LUYỆN PHÁT ÂM TIẾNG TRUNG CÙNG GOPI🐱💖</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f0f4ff; margin: 20px; color: #333; }
+    h2 { color: #4a6cf7; text-align:center; }
+    .search-box { width: 70%; margin: 0 auto; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    textarea { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc; font-size: 16px; }
+    button { background: #4a6cf7; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; margin-top:10px; }
+    button:hover { background: #3a56c7; }
+    #result { margin-top: 12px; font-size:18px; }
+    .translation { color:#4a6cf7; font-style:italic; }
+    table { border-collapse: collapse; width: 100%; margin-top:20px; font-size: 14px; }
+    th, td { border: 1px solid #ddd; padding: 6px; text-align: center; }
+    th { background: #4a6cf7; color: white; }
+    td button { background: none; border: none; font-size: 16px; cursor: pointer; }
+    td button:hover { color: #4a6cf7; }
+  </style>
+</head>
+<body>
+  <h2>🐷💖LUYỆN PHÁT ÂM TIẾNG TRUNG CÙNG GOPI🐱💖</h2>
+
+  <!-- Khung nhập + kết quả -->
+  <div class="search-box">
+    <textarea id="textInput" rows="3" placeholder="请输入中文词或句子..."></textarea>
+    <button onclick="processInput()">发音 + 翻译</button>
+    <div id="result"></div>
+  </div>
+
+  <!-- Bảng nguyên âm (Pinyin Vowels) -->
+  <table>
+    <tr><th colspan="6">🔤 Nguyên âm (Vowels)</th></tr>
+    <tr><th>Âm</th><th>Chữ Hán</th><th>Pinyin</th><th>Thanh điệu</th><th>Nghĩa</th><th>Nghe</th></tr>
+    <tr><td>a</td><td>妈</td><td>mā</td><td>Thanh 1 (cao)</td><td>mẹ</td><td><button onclick="speakWord('妈')">🔊</button></td></tr>
+    <tr><td>o</td><td>我</td><td>wǒ</td><td>Thanh 3 (trũng)</td><td>tôi</td><td><button onclick="speakWord('我')">🔊</button></td></tr>
+    <tr><td>e</td><td>喝</td><td>hē</td><td>Thanh 1 (cao)</td><td>uống</td><td><button onclick="speakWord('喝')">🔊</button></td></tr>
+    <tr><td>i</td><td>你</td><td>nǐ</td><td>Thanh 3 (trũng)</td><td>bạn</td><td><button onclick="speakWord('你')">🔊</button></td></tr>
+    <tr><td>u</td><td>书</td><td>shū</td><td>Thanh 1 (cao)</td><td>sách</td><td><button onclick="speakWord('书')">🔊</button></td></tr>
+    <tr><td>ü</td><td>女</td><td>nǚ</td><td>Thanh 3 (trũng)</td><td>nữ</td><td><button onclick="speakWord('女')">🔊</button></td></tr>
+  </table>
+
+  <!-- Bảng phụ âm (Pinyin Consonants) -->
+  <table>
+    <tr><th colspan="6">🗣️ Phụ âm (Consonants)</th></tr>
+    <tr><th>Âm</th><th>Chữ Hán</th><th>Pinyin</th><th>Thanh điệu</th><th>Nghĩa</th><th>Nghe</th></tr>
+    <tr><td>b</td><td>爸</td><td>bà</td><td>Thanh 4 (xuống)</td><td>cha</td><td><button onclick="speakWord('爸')">🔊</button></td></tr>
+    <tr><td>p</td><td>朋友</td><td>péngyǒu</td><td>Thanh 2 + Thanh nhẹ</td><td>bạn bè</td><td><button onclick="speakWord('朋友')">🔊</button></td></tr>
+    <tr><td>m</td><td>马</td><td>mǎ</td><td>Thanh 3 (trũng)</td><td>ngựa</td><td><button onclick="speakWord('马')">🔊</button></td></tr>
+    <tr><td>f</td><td>饭</td><td>fàn</td><td>Thanh 4 (xuống)</td><td>cơm</td><td><button onclick="speakWord('饭')">🔊</button></td></tr>
+    <tr><td>d</td><td>大</td><td>dà</td><td>Thanh 4 (xuống)</td><td>to, lớn</td><td><button onclick="speakWord('大')">🔊</button></td></tr>
+    <tr><td>t</td><td>天</td><td>tiān</td><td>Thanh 1 (cao)</td><td>trời</td><td><button onclick="speakWord('天')">🔊</button></td></tr>
+    <tr><td>n</td><td>你</td><td>nǐ</td><td>Thanh 3 (trũng)</td><td>bạn</td><td><button onclick="speakWord('你')">🔊</button></td></tr>
+    <tr><td>l</td><td>老师</td><td>lǎoshī</td><td>Thanh 3 + Thanh 1</td><td>giáo viên</td><td><button onclick="speakWord('老师')">🔊</button></td></tr>
+  </table>
+
+  <script>
+    async function processInput() {
+      const text = document.getElementById('textInput').value.trim();
+      if (!text) return;
+
+      // Phát âm tiếng Trung
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'zh-CN';
+      speechSynthesis.speak(utterance);
+
+      let translationText = "";
+
+      // Dịch nghĩa tiếng Việt
+      try {
+        const transResponse = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=zh|vi`);
+        const transData = await transResponse.json();
+        if (transData.responseData.translatedText) {
+          translationText = transData.responseData.translatedText;
+        }
+      } catch (err) {
+        translationText = "(không dịch được)";
+      }
+
+      document.getElementById('result').innerHTML = `
+        <div class="translation">📖 Dịch: ${translationText}</div>
+      `;
+    }
+
+    function speakWord(word) {
+      const utterance = new SpeechSynthesisUtterance(word);
+      utterance.lang = 'zh-CN';
+      speechSynthesis.speak(utterance);
+    }
+  </script>
+</body>
+</html>
