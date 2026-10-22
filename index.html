@@ -4,70 +4,477 @@
   <meta charset="UTF-8">
   <title>🐷💖LUYỆN PHÁT ÂM TIẾNG TRUNG CÙNG GOPI🐱💖</title>
   <style>
-    body { font-family: Arial, sans-serif; background: #f0f4ff; margin: 20px; color: #333; }
-    h2 { color: #4a6cf7; text-align:center; }
-    .search-box { width: 70%; margin: 0 auto; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-    textarea { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc; font-size: 16px; }
-    button { background: #4a6cf7; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; margin-top:10px; }
-    button:hover { background: #3a56c7; }
-    #result { margin-top: 12px; font-size:18px; }
-    .translation { color:#4a6cf7; font-style:italic; }
-    table { border-collapse: collapse; width: 100%; margin-top:20px; font-size: 14px; }
-    th, td { border: 1px solid #ddd; padding: 6px; text-align: center; }
-    th { background: #4a6cf7; color: white; }
-    td button { background: none; border: none; font-size: 16px; cursor: pointer; }
-    td button:hover { color: #4a6cf7; }
+    :root {
+      --bg: #eef4ff;
+      --panel: #ffffff;
+      --panel-soft: #f8faff;
+      --primary: #4a6cf7;
+      --primary-dark: #2d4cc8;
+      --primary-soft: #dfeaff;
+      --border: #dfe8ff;
+      --text: #24314d;
+      --muted: #5d6b82;
+      --shadow: rgba(40, 72, 140, 0.12);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: var(--bg);
+      margin: 20px;
+      color: var(--text);
+    }
+
+    h2 {
+      color: var(--primary);
+      text-align: center;
+      margin-bottom: 18px;
+    }
+
+    .search-box {
+      width: 70%;
+      margin: 0 auto;
+      background: var(--panel);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px var(--shadow);
+      border: 1px solid var(--border);
+    }
+
+    textarea, input {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid #cfdaf8;
+      font-size: 16px;
+      box-sizing: border-box;
+      outline: none;
+    }
+
+    textarea:focus, input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(74, 108, 247, 0.12);
+    }
+
+    button {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: 0.2s ease;
+    }
+
+    button:hover {
+      background: var(--primary-dark);
+    }
+
+    #result {
+      margin-top: 12px;
+      font-size: 18px;
+    }
+
+    .translation {
+      color: var(--primary);
+      font-style: italic;
+      font-weight: 600;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      font-size: 14px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 3px 10px var(--shadow);
+    }
+
+    th, td {
+      border: 1px solid var(--border);
+      padding: 10px 8px;
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    th {
+      background: linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      font-size: 15px;
+    }
+
+    tr:nth-child(even) td {
+      background: #f8faff;
+    }
+
+    td:nth-child(4) {
+      font-weight: 700;
+      color: var(--primary-dark);
+    }
+
+    td button {
+      background: transparent;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+      margin: 0;
+      color: var(--primary-dark);
+      padding: 6px 8px;
+    }
+
+    td button:hover {
+      background: var(--primary-soft);
+      border-radius: 6px;
+    }
+
+    .ime-box {
+      width: 70%;
+      margin: 24px auto 0;
+      background: var(--panel-soft);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+      box-sizing: border-box;
+      box-shadow: 0 3px 10px var(--shadow);
+    }
+
+    .ime-box h3 {
+      margin: 0 0 12px;
+      color: var(--primary-dark);
+    }
+
+    .helper {
+      color: var(--primary);
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .actions button {
+      margin-top: 0;
+    }
+
+    .candidate-list {
+      margin-top: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .candidate-item {
+      background: #eef3ff;
+      color: #1d3d9b;
+      border: 1px solid #cfe0ff;
+      padding: 8px 12px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      min-width: 44px;
+    }
+
+    .candidate-item:hover {
+      background: #dfeaff;
+    }
+
+    .output-chinese {
+      margin-top: 14px;
+      font-size: 34px;
+      color: var(--primary-dark);
+      font-weight: bold;
+      min-height: 48px;
+    }
+
+    .hint {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 13px;
+    }
   </style>
 </head>
 <body>
   <h2>🐷💖LUYỆN PHÁT ÂM TIẾNG TRUNG CÙNG GOPI🐱💖</h2>
 
-  <!-- Khung nhập + kết quả -->
   <div class="search-box">
     <textarea id="textInput" rows="3" placeholder="请输入中文词或句子..."></textarea>
     <button onclick="processInput()">发音 + 翻译</button>
     <div id="result"></div>
   </div>
 
-  <!-- Bảng nguyên âm (Pinyin Vowels) -->
+  <div class="ime-box">
+    <h3>⌨️ IME tiếng Trung nâng cao</h3>
+    <div class="helper">Gõ: nihao, ni hao, xiexie, woaini. Chọn bằng phím 1-9.</div>
+    <input id="pinyinInput" type="text" placeholder="Ví dụ: nihao hoặc ni hao" />
+    <div class="actions">
+      <button onclick="convertAdvancedIme()">Chuyển chữ Hán</button>
+      <button onclick="speakConvertedText()">Phát âm</button>
+      <button onclick="clearIme()">Xóa</button>
+    </div>
+    <div class="candidate-list" id="candidateList"></div>
+    <div class="output-chinese" id="outputChinese"></div>
+    <div class="hint">Ví dụ: nihao → 你好, xiexie → 谢谢, woaini → 我爱你</div>
+  </div>
+
   <table>
     <tr><th colspan="6">🔤 Nguyên âm (Vowels)</th></tr>
     <tr><th>Âm</th><th>Chữ Hán</th><th>Pinyin</th><th>Thanh điệu</th><th>Nghĩa</th><th>Nghe</th></tr>
-    <tr><td>a</td><td>妈</td><td>mā</td><td>Thanh 1 (cao)</td><td>mẹ</td><td><button onclick="speakWord('妈')">🔊</button></td></tr>
-    <tr><td>o</td><td>我</td><td>wǒ</td><td>Thanh 3 (trũng)</td><td>tôi</td><td><button onclick="speakWord('我')">🔊</button></td></tr>
-    <tr><td>e</td><td>喝</td><td>hē</td><td>Thanh 1 (cao)</td><td>uống</td><td><button onclick="speakWord('喝')">🔊</button></td></tr>
-    <tr><td>i</td><td>你</td><td>nǐ</td><td>Thanh 3 (trũng)</td><td>bạn</td><td><button onclick="speakWord('你')">🔊</button></td></tr>
-    <tr><td>u</td><td>书</td><td>shū</td><td>Thanh 1 (cao)</td><td>sách</td><td><button onclick="speakWord('书')">🔊</button></td></tr>
-    <tr><td>ü</td><td>女</td><td>nǚ</td><td>Thanh 3 (trũng)</td><td>nữ</td><td><button onclick="speakWord('女')">🔊</button></td></tr>
+    <tr><td>a</td><td>妈</td><td>mā</td><td>Thanh 1</td><td>mẹ</td><td><button onclick="speakWord('妈')">🔊</button></td></tr>
+    <tr><td>o</td><td>我</td><td>wǒ</td><td>Thanh 3</td><td>tôi</td><td><button onclick="speakWord('我')">🔊</button></td></tr>
+    <tr><td>e</td><td>喝</td><td>hē</td><td>Thanh 1</td><td>uống</td><td><button onclick="speakWord('喝')">🔊</button></td></tr>
+    <tr><td>i</td><td>你</td><td>nǐ</td><td>Thanh 3</td><td>bạn</td><td><button onclick="speakWord('你')">🔊</button></td></tr>
+    <tr><td>u</td><td>书</td><td>shū</td><td>Thanh 1</td><td>sách</td><td><button onclick="speakWord('书')">🔊</button></td></tr>
+    <tr><td>ü</td><td>女</td><td>nǚ</td><td>Thanh 3</td><td>nữ</td><td><button onclick="speakWord('女')">🔊</button></td></tr>
+    <tr><td>ai</td><td>爱</td><td>ài</td><td>Thanh 4</td><td>yêu</td><td><button onclick="speakWord('爱')">🔊</button></td></tr>
+    <tr><td>ei</td><td>黑</td><td>hēi</td><td>Thanh 1</td><td>đen</td><td><button onclick="speakWord('黑')">🔊</button></td></tr>
+    <tr><td>ao</td><td>好</td><td>hǎo</td><td>Thanh 3</td><td>tốt</td><td><button onclick="speakWord('好')">🔊</button></td></tr>
+    <tr><td>ou</td><td>狗</td><td>gǒu</td><td>Thanh 3</td><td>chó</td><td><button onclick="speakWord('狗')">🔊</button></td></tr>
+    <tr><td>ia</td><td>家</td><td>jiā</td><td>Thanh 1</td><td>nhà</td><td><button onclick="speakWord('家')">🔊</button></td></tr>
+    <tr><td>ie</td><td>谢</td><td>xiè</td><td>Thanh 4</td><td>cảm ơn</td><td><button onclick="speakWord('谢')">🔊</button></td></tr>
+    <tr><td>ua</td><td>花</td><td>huā</td><td>Thanh 1</td><td>hoa</td><td><button onclick="speakWord('花')">🔊</button></td></tr>
+    <tr><td>uo</td><td>我</td><td>wǒ</td><td>Thanh 3</td><td>tôi</td><td><button onclick="speakWord('我')">🔊</button></td></tr>
+    <tr><td>üe</td><td>月</td><td>yuè</td><td>Thanh 4</td><td>trăng/tháng</td><td><button onclick="speakWord('月')">🔊</button></td></tr>
+    <tr><td>er</td><td>儿</td><td>ér</td><td>Thanh 2</td><td>con/trẻ</td><td><button onclick="speakWord('儿')">🔊</button></td></tr>
   </table>
 
-  <!-- Bảng phụ âm (Pinyin Consonants) -->
   <table>
     <tr><th colspan="6">🗣️ Phụ âm (Consonants)</th></tr>
     <tr><th>Âm</th><th>Chữ Hán</th><th>Pinyin</th><th>Thanh điệu</th><th>Nghĩa</th><th>Nghe</th></tr>
-    <tr><td>b</td><td>爸</td><td>bà</td><td>Thanh 4 (xuống)</td><td>cha</td><td><button onclick="speakWord('爸')">🔊</button></td></tr>
-    <tr><td>p</td><td>朋友</td><td>péngyǒu</td><td>Thanh 2 + Thanh nhẹ</td><td>bạn bè</td><td><button onclick="speakWord('朋友')">🔊</button></td></tr>
-    <tr><td>m</td><td>马</td><td>mǎ</td><td>Thanh 3 (trũng)</td><td>ngựa</td><td><button onclick="speakWord('马')">🔊</button></td></tr>
-    <tr><td>f</td><td>饭</td><td>fàn</td><td>Thanh 4 (xuống)</td><td>cơm</td><td><button onclick="speakWord('饭')">🔊</button></td></tr>
-    <tr><td>d</td><td>大</td><td>dà</td><td>Thanh 4 (xuống)</td><td>to, lớn</td><td><button onclick="speakWord('大')">🔊</button></td></tr>
-    <tr><td>t</td><td>天</td><td>tiān</td><td>Thanh 1 (cao)</td><td>trời</td><td><button onclick="speakWord('天')">🔊</button></td></tr>
-    <tr><td>n</td><td>你</td><td>nǐ</td><td>Thanh 3 (trũng)</td><td>bạn</td><td><button onclick="speakWord('你')">🔊</button></td></tr>
-    <tr><td>l</td><td>老师</td><td>lǎoshī</td><td>Thanh 3 + Thanh 1</td><td>giáo viên</td><td><button onclick="speakWord('老师')">🔊</button></td></tr>
+    <tr><td>b</td><td>爸</td><td>bà</td><td>Thanh 4</td><td>cha</td><td><button onclick="speakWord('爸')">🔊</button></td></tr>
+    <tr><td>p</td><td>朋友</td><td>péngyǒu</td><td>Thanh 2</td><td>bạn bè</td><td><button onclick="speakWord('朋友')">🔊</button></td></tr>
+    <tr><td>m</td><td>马</td><td>mǎ</td><td>Thanh 3</td><td>ngựa</td><td><button onclick="speakWord('马')">🔊</button></td></tr>
+    <tr><td>f</td><td>饭</td><td>fàn</td><td>Thanh 4</td><td>cơm</td><td><button onclick="speakWord('饭')">🔊</button></td></tr>
+    <tr><td>d</td><td>大</td><td>dà</td><td>Thanh 4</td><td>to, lớn</td><td><button onclick="speakWord('大')">🔊</button></td></tr>
+    <tr><td>t</td><td>天</td><td>tiān</td><td>Thanh 1</td><td>trời</td><td><button onclick="speakWord('天')">🔊</button></td></tr>
+    <tr><td>n</td><td>你</td><td>nǐ</td><td>Thanh 3</td><td>bạn</td><td><button onclick="speakWord('你')">🔊</button></td></tr>
+    <tr><td>l</td><td>老师</td><td>lǎoshī</td><td>Thanh 3</td><td>giáo viên</td><td><button onclick="speakWord('老师')">🔊</button></td></tr>
   </table>
 
+  <script src="https://cdn.jsdelivr.net/npm/pinyin-pro@3.26.0/dist/index.js"></script>
   <script>
+    const advancedDictionary = {
+      'nihao': ['你好', '你好吗'],
+      'ni hao': ['你好', '你好吗'],
+      'xiexie': ['谢谢'],
+      'xie xie': ['谢谢'],
+      'woaini': ['我爱你'],
+      'wo ai ni': ['我爱你'],
+      'zaijian': ['再见'],
+      'zai jian': ['再见'],
+      'laoshi': ['老师'],
+      'dao': ['到', '倒'],
+      'shangke': ['上课'],
+      'shang ke': ['上课'],
+      'xiake': ['下课'],
+      'xia ke': ['下课'],
+      'gaoxing': ['高兴'],
+      'jia you': ['加油'],
+      'mingtian': ['明天'],
+      'ming tian': ['明天'],
+      'jin tian': ['今天'],
+      'zuo tian': ['昨天'],
+      'zhongguo': ['中国'],
+      'zhong guo': ['中国'],
+      'yin yue': ['音乐'],
+      'diannao': ['电脑'],
+      'ta men': ['他们'],
+      'ren': ['人'],
+      'shi': ['是'],
+      'ma': ['吗'],
+      'hao': ['好'],
+      'nimen': ['你们'],
+      'wo': ['我'],
+      'ni': ['你', '泥', '妮', '呢', '尼'],
+      'xie': ['写', '些', '谢', '斜', '鞋'],
+      'ai': ['爱', '哀', '矮'],
+      'zai': ['在', '再', '灾'],
+      'jian': ['见', '间', '件', '建'],
+      'shang': ['上', '商', '赏'],
+      'ke': ['可', '课', '克', '客'],
+      'lao': ['老', '捞', '牢'],
+      'xin': ['新', '心', '信'],
+      'zhong': ['中', '钟', '重'],
+      'guo': ['国', '果', '过']
+    };
+
+    const pinyinInput = document.getElementById('pinyinInput');
+    const candidateListEl = document.getElementById('candidateList');
+    const outputEl = document.getElementById('outputChinese');
+    let currentCandidates = [];
+
+    function normalizeInput(value) {
+      return value
+        .trim()
+        .toLowerCase()
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/ü/g, 'v')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    function getExactMatch(raw) {
+      const clean = normalizeInput(raw);
+      if (!clean) return [];
+
+      if (advancedDictionary[clean]) {
+        return advancedDictionary[clean];
+      }
+
+      const spaceLess = clean.replace(/\s+/g, '');
+      if (advancedDictionary[spaceLess]) {
+        return advancedDictionary[spaceLess];
+      }
+
+      return [];
+    }
+
+    function getCandidates(raw) {
+      const clean = normalizeInput(raw);
+      if (!clean) return [];
+
+      const exact = getExactMatch(clean);
+      if (exact.length) return exact;
+
+      const tokens = clean.split(/\s+/).filter(Boolean);
+      if (tokens.length > 1) {
+        const combined = tokens.join(' ');
+        const phraseCandidates = getExactMatch(combined);
+        if (phraseCandidates.length) return phraseCandidates;
+      }
+
+      const prefixMatches = Object.keys(advancedDictionary)
+        .filter(key => key.startsWith(clean) || clean.startsWith(key) || key.replace(/\s+/g, '').startsWith(clean.replace(/\s+/g, '')))
+        .slice(0, 8);
+
+      if (prefixMatches.length) {
+        const result = [];
+        prefixMatches.forEach(key => {
+          advancedDictionary[key].forEach(item => result.push(item));
+        });
+        return [...new Set(result)].slice(0, 9);
+      }
+
+      if (tokens.length > 1) {
+        const built = tokens.map(token => {
+          const arr = advancedDictionary[token] || [token];
+          return arr[0];
+        }).join('');
+        return built ? [built] : [];
+      }
+
+      const single = advancedDictionary[clean];
+      return single ? single : [];
+    }
+
+    function renderCandidates(items) {
+      currentCandidates = items.slice(0, 9);
+      candidateListEl.innerHTML = '';
+
+      if (!currentCandidates.length) {
+        return;
+      }
+
+      currentCandidates.forEach((item, index) => {
+        const button = document.createElement('button');
+        button.className = 'candidate-item';
+        button.type = 'button';
+        button.textContent = `${index + 1}. ${item}`;
+        button.addEventListener('click', () => applyCandidate(item));
+        candidateListEl.appendChild(button);
+      });
+    }
+
+    function applyCandidate(value) {
+      outputEl.textContent = value;
+      speakWord(value);
+    }
+
+    function convertAdvancedIme() {
+      const raw = pinyinInput.value;
+      const normalized = normalizeInput(raw);
+      let result = getCandidates(normalized);
+
+      if (!result.length && window.pinyinPro && typeof window.pinyinPro.convert === 'function') {
+        try {
+          const libValue = window.pinyinPro.convert(normalized) || '';
+          if (libValue) {
+            result = [libValue];
+          }
+        } catch (err) {
+          result = [];
+        }
+      }
+
+      if (!result.length) {
+        const tokens = normalized.split(/\s+/).filter(Boolean);
+        if (tokens.length) {
+          const built = tokens.map(token => {
+            const list = advancedDictionary[token] || [token];
+            return list[0];
+          }).join('');
+          if (built) result = [built];
+        }
+      }
+
+      outputEl.textContent = result[0] || 'Không có kết quả';
+      renderCandidates(result);
+    }
+
+    function clearIme() {
+      pinyinInput.value = '';
+      outputEl.textContent = '';
+      candidateListEl.innerHTML = '';
+      currentCandidates = [];
+    }
+
+    function speakConvertedText() {
+      const text = outputEl.textContent.trim();
+      if (!text || text === 'Không có kết quả') return;
+      speakWord(text);
+    }
+
+    pinyinInput.addEventListener('input', () => {
+      const raw = pinyinInput.value;
+      const normalized = normalizeInput(raw);
+      if (!normalized) {
+        candidateListEl.innerHTML = '';
+        outputEl.textContent = '';
+        return;
+      }
+
+      const result = getCandidates(normalized);
+      renderCandidates(result);
+      if (result.length) {
+        outputEl.textContent = result[0];
+      }
+    });
+
+    document.addEventListener('keydown', (event) => {
+      const key = Number(event.key);
+      if (key >= 1 && key <= 9 && currentCandidates[key - 1]) {
+        applyCandidate(currentCandidates[key - 1]);
+      }
+    });
+
     async function processInput() {
       const text = document.getElementById('textInput').value.trim();
       if (!text) return;
 
-      // Phát âm tiếng Trung
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = 'zh-CN';
       speechSynthesis.speak(utterance);
 
-      let translationText = "";
+      let translationText = '';
 
-      // Dịch nghĩa tiếng Việt
       try {
         const transResponse = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=zh|vi`);
         const transData = await transResponse.json();
@@ -75,7 +482,7 @@
           translationText = transData.responseData.translatedText;
         }
       } catch (err) {
-        translationText = "(không dịch được)";
+        translationText = '(không dịch được)';
       }
 
       document.getElementById('result').innerHTML = `
