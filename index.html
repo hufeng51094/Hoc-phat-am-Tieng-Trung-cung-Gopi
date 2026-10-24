@@ -34,6 +34,7 @@
 
     .search-box {
       width: 70%;
+      max-width: 900px;
       margin: 0 auto;
       background: var(--panel);
       padding: 20px;
@@ -83,16 +84,54 @@
       font-weight: 600;
     }
 
+    .reference-panel {
+      width: 90%;
+      max-width: 1200px;
+      margin: 28px auto 0;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: 0 4px 14px var(--shadow);
+      padding: 18px;
+    }
+
+    .reference-panel h3 {
+      margin: 0 0 16px;
+      color: var(--primary-dark);
+      text-align: center;
+      font-size: 24px;
+    }
+
+    .phonetic-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .phonetic-card {
+      background: linear-gradient(180deg, #ffffff 0%, #f8faff 100%);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 3px 10px rgba(74, 108, 247, 0.08);
+    }
+
+    .phonetic-card-header {
+      background: linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: #fff;
+      padding: 12px 16px;
+      font-weight: 700;
+      text-align: center;
+      font-size: 18px;
+      letter-spacing: 0.5px;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 20px;
+      margin: 0;
       font-size: 14px;
       background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 3px 10px var(--shadow);
     }
 
     th, td {
@@ -103,9 +142,9 @@
     }
 
     th {
-      background: linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 100%);
-      color: white;
-      font-size: 15px;
+      background: linear-gradient(180deg, #eef3ff 0%, #e4edff 100%);
+      color: var(--primary-dark);
+      font-size: 14px;
     }
 
     tr:nth-child(even) td {
@@ -134,6 +173,7 @@
 
     .ime-box {
       width: 70%;
+      max-width: 900px;
       margin: 24px auto 0;
       background: var(--panel-soft);
       border: 1px solid var(--border);
@@ -244,6 +284,17 @@
       color: var(--muted);
       font-size: 13px;
     }
+
+    @media (max-width: 900px) {
+      .search-box,
+      .ime-box {
+        width: 90%;
+      }
+
+      .phonetic-grid {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 <body>
@@ -275,39 +326,61 @@
     <div class="hint">Ví dụ: nihao → 你好, xiexie → 谢谢, woaini → 我爱你</div>
   </div>
 
-  <table>
-    <tr><th colspan="6">🔤 Nguyên âm (Vowels)</th></tr>
-    <tr><th>Âm</th><th>Chữ Hán</th><th>Pinyin</th><th>Thanh điệu</th><th>Nghĩa</th><th>Nghe</th></tr>
-    <tr><td>a</td><td>妈</td><td>mā</td><td>Thanh 1</td><td>mẹ</td><td><button onclick="speakWord('妈')">🔊</button></td></tr>
-    <tr><td>o</td><td>我</td><td>wǒ</td><td>Thanh 3</td><td>tôi</td><td><button onclick="speakWord('我')">🔊</button></td></tr>
-    <tr><td>e</td><td>喝</td><td>hē</td><td>Thanh 1</td><td>uống</td><td><button onclick="speakWord('喝')">🔊</button></td></tr>
-    <tr><td>i</td><td>你</td><td>nǐ</td><td>Thanh 3</td><td>bạn</td><td><button onclick="speakWord('你')">🔊</button></td></tr>
-    <tr><td>u</td><td>书</td><td>shū</td><td>Thanh 1</td><td>sách</td><td><button onclick="speakWord('书')">🔊</button></td></tr>
-    <tr><td>ü</td><td>女</td><td>nǚ</td><td>Thanh 3</td><td>nữ</td><td><button onclick="speakWord('女')">🔊</button></td></tr>
-    <tr><td>ai</td><td>爱</td><td>ài</td><td>Thanh 4</td><td>yêu</td><td><button onclick="speakWord('爱')">🔊</button></td></tr>
-    <tr><td>ei</td><td>黑</td><td>hēi</td><td>Thanh 1</td><td>đen</td><td><button onclick="speakWord('黑')">🔊</button></td></tr>
-    <tr><td>ao</td><td>好</td><td>hǎo</td><td>Thanh 3</td><td>tốt</td><td><button onclick="speakWord('好')">🔊</button></td></tr>
-    <tr><td>ou</td><td>狗</td><td>gǒu</td><td>Thanh 3</td><td>chó</td><td><button onclick="speakWord('狗')">🔊</button></td></tr>
-    <tr><td>ia</td><td>家</td><td>jiā</td><td>Thanh 1</td><td>nhà</td><td><button onclick="speakWord('家')">🔊</button></td></tr>
-    <tr><td>ie</td><td>谢</td><td>xiè</td><td>Thanh 4</td><td>cảm ơn</td><td><button onclick="speakWord('谢')">🔊</button></td></tr>
-    <tr><td>ua</td><td>花</td><td>huā</td><td>Thanh 1</td><td>hoa</td><td><button onclick="speakWord('花')">🔊</button></td></tr>
-    <tr><td>uo</td><td>我</td><td>wǒ</td><td>Thanh 3</td><td>tôi</td><td><button onclick="speakWord('我')">🔊</button></td></tr>
-    <tr><td>üe</td><td>月</td><td>yuè</td><td>Thanh 4</td><td>trăng/tháng</td><td><button onclick="speakWord('月')">🔊</button></td></tr>
-    <tr><td>er</td><td>儿</td><td>ér</td><td>Thanh 2</td><td>con/trẻ</td><td><button onclick="speakWord('儿')">🔊</button></td></tr>
-  </table>
+  <div class="reference-panel">
+    <h3>📚 Bảng tra cứu âm vị tiếng Trung</h3>
+    <div class="phonetic-grid">
+      <div class="phonetic-card">
+        <div class="phonetic-card-header">🔤 Nguyên âm (Vowels)</div>
+        <table>
+          <tr><th>Âm</th><th>Chữ Hán</th><th>Pinyin</th><th>Thanh điệu</th><th>Nghĩa</th><th>Nghe</th></tr>
+          <tr><td>a</td><td>妈</td><td>mā</td><td>Thanh 1</td><td>mẹ</td><td><button onclick="speakWord('妈')">🔊</button></td></tr>
+          <tr><td>o</td><td>我</td><td>wǒ</td><td>Thanh 3</td><td>tôi</td><td><button onclick="speakWord('我')">🔊</button></td></tr>
+          <tr><td>e</td><td>喝</td><td>hē</td><td>Thanh 1</td><td>uống</td><td><button onclick="speakWord('喝')">🔊</button></td></tr>
+          <tr><td>i</td><td>你</td><td>nǐ</td><td>Thanh 3</td><td>bạn</td><td><button onclick="speakWord('你')">🔊</button></td></tr>
+          <tr><td>u</td><td>书</td><td>shū</td><td>Thanh 1</td><td>sách</td><td><button onclick="speakWord('书')">🔊</button></td></tr>
+          <tr><td>ü</td><td>女</td><td>nǚ</td><td>Thanh 3</td><td>nữ</td><td><button onclick="speakWord('女')">🔊</button></td></tr>
+          <tr><td>ai</td><td>爱</td><td>ài</td><td>Thanh 4</td><td>yêu</td><td><button onclick="speakWord('爱')">🔊</button></td></tr>
+          <tr><td>ei</td><td>黑</td><td>hēi</td><td>Thanh 1</td><td>đen</td><td><button onclick="speakWord('黑')">🔊</button></td></tr>
+          <tr><td>ao</td><td>好</td><td>hǎo</td><td>Thanh 3</td><td>tốt</td><td><button onclick="speakWord('好')">🔊</button></td></tr>
+          <tr><td>ou</td><td>狗</td><td>gǒu</td><td>Thanh 3</td><td>chó</td><td><button onclick="speakWord('狗')">🔊</button></td></tr>
+          <tr><td>ia</td><td>家</td><td>jiā</td><td>Thanh 1</td><td>nhà</td><td><button onclick="speakWord('家')">🔊</button></td></tr>
+          <tr><td>ie</td><td>谢</td><td>xiè</td><td>Thanh 4</td><td>cảm ơn</td><td><button onclick="speakWord('谢')">🔊</button></td></tr>
+          <tr><td>ua</td><td>花</td><td>huā</td><td>Thanh 1</td><td>hoa</td><td><button onclick="speakWord('花')">🔊</button></td></tr>
+          <tr><td>uo</td><td>我</td><td>wǒ</td><td>Thanh 3</td><td>tôi</td><td><button onclick="speakWord('我')">🔊</button></td></tr>
+          <tr><td>üe</td><td>月</td><td>yuè</td><td>Thanh 4</td><td>trăng/tháng</td><td><button onclick="speakWord('月')">🔊</button></td></tr>
+          <tr><td>er</td><td>儿</td><td>ér</td><td>Thanh 2</td><td>con/trẻ</td><td><button onclick="speakWord('儿')">🔊</button></td></tr>
+        </table>
+      </div>
 
-  <table>
-    <tr><th colspan="6">🗣️ Phụ âm (Consonants)</th></tr>
-    <tr><th>Âm</th><th>Chữ Hán</th><th>Pinyin</th><th>Thanh điệu</th><th>Nghĩa</th><th>Nghe</th></tr>
-    <tr><td>b</td><td>爸</td><td>bà</td><td>Thanh 4</td><td>cha</td><td><button onclick="speakWord('爸')">🔊</button></td></tr>
-    <tr><td>p</td><td>朋友</td><td>péngyǒu</td><td>Thanh 2</td><td>bạn bè</td><td><button onclick="speakWord('朋友')">🔊</button></td></tr>
-    <tr><td>m</td><td>马</td><td>mǎ</td><td>Thanh 3</td><td>ngựa</td><td><button onclick="speakWord('马')">🔊</button></td></tr>
-    <tr><td>f</td><td>饭</td><td>fàn</td><td>Thanh 4</td><td>cơm</td><td><button onclick="speakWord('饭')">🔊</button></td></tr>
-    <tr><td>d</td><td>大</td><td>dà</td><td>Thanh 4</td><td>to, lớn</td><td><button onclick="speakWord('大')">🔊</button></td></tr>
-    <tr><td>t</td><td>天</td><td>tiān</td><td>Thanh 1</td><td>trời</td><td><button onclick="speakWord('天')">🔊</button></td></tr>
-    <tr><td>n</td><td>你</td><td>nǐ</td><td>Thanh 3</td><td>bạn</td><td><button onclick="speakWord('你')">🔊</button></td></tr>
-    <tr><td>l</td><td>老师</td><td>lǎoshī</td><td>Thanh 3</td><td>giáo viên</td><td><button onclick="speakWord('老师')">🔊</button></td></tr>
-  </table>
+      <div class="phonetic-card">
+        <div class="phonetic-card-header">🗣️ Phụ âm (Consonants)</div>
+        <table>
+          <tr><th>Âm</th><th>Chữ Hán</th><th>Pinyin</th><th>Thanh điệu</th><th>Nghĩa</th><th>Nghe</th></tr>
+          <tr><td>b</td><td>爸</td><td>bà</td><td>Thanh 4</td><td>cha</td><td><button onclick="speakWord('爸')">🔊</button></td></tr>
+          <tr><td>p</td><td>朋友</td><td>péngyǒu</td><td>Thanh 2 + nhẹ</td><td>bạn bè</td><td><button onclick="speakWord('朋友')">🔊</button></td></tr>
+          <tr><td>m</td><td>马</td><td>mǎ</td><td>Thanh 3</td><td>ngựa</td><td><button onclick="speakWord('马')">🔊</button></td></tr>
+          <tr><td>f</td><td>饭</td><td>fàn</td><td>Thanh 4</td><td>cơm</td><td><button onclick="speakWord('饭')">🔊</button></td></tr>
+          <tr><td>d</td><td>大</td><td>dà</td><td>Thanh 4</td><td>to, lớn</td><td><button onclick="speakWord('大')">🔊</button></td></tr>
+          <tr><td>t</td><td>天</td><td>tiān</td><td>Thanh 1</td><td>trời</td><td><button onclick="speakWord('天')">🔊</button></td></tr>
+          <tr><td>n</td><td>你</td><td>nǐ</td><td>Thanh 3</td><td>bạn</td><td><button onclick="speakWord('你')">🔊</button></td></tr>
+          <tr><td>l</td><td>老师</td><td>lǎoshī</td><td>Thanh 3 + 1</td><td>giáo viên</td><td><button onclick="speakWord('老师')">🔊</button></td></tr>
+          <tr><td>g</td><td>哥</td><td>gē</td><td>Thanh 1</td><td>anh trai</td><td><button onclick="speakWord('哥')">🔊</button></td></tr>
+          <tr><td>k</td><td>看</td><td>kàn</td><td>Thanh 4</td><td>xem</td><td><button onclick="speakWord('看')">🔊</button></td></tr>
+          <tr><td>h</td><td>好</td><td>hǎo</td><td>Thanh 3</td><td>tốt</td><td><button onclick="speakWord('好')">🔊</button></td></tr>
+          <tr><td>j</td><td>家</td><td>jiā</td><td>Thanh 1</td><td>nhà</td><td><button onclick="speakWord('家')">🔊</button></td></tr>
+          <tr><td>q</td><td>请</td><td>qǐng</td><td>Thanh 3</td><td>mời</td><td><button onclick="speakWord('请')">🔊</button></td></tr>
+          <tr><td>x</td><td>小</td><td>xiǎo</td><td>Thanh 3</td><td>nhỏ</td><td><button onclick="speakWord('小')">🔊</button></td></tr>
+          <tr><td>z</td><td>字</td><td>zì</td><td>Thanh 4</td><td>chữ</td><td><button onclick="speakWord('字')">🔊</button></td></tr>
+          <tr><td>zh</td><td>中国</td><td>Zhōngguó</td><td>Thanh 1 + 2</td><td>Trung Quốc</td><td><button onclick="speakWord('中国')">🔊</button></td></tr>
+          <tr><td>ch</td><td>吃</td><td>chī</td><td>Thanh 1</td><td>ăn</td><td><button onclick="speakWord('吃')">🔊</button></td></tr>
+          <tr><td>sh</td><td>是</td><td>shì</td><td>Thanh 4</td><td>là</td><td><button onclick="speakWord('是')">🔊</button></td></tr>
+          <tr><td>r</td><td>人</td><td>rén</td><td>Thanh 2</td><td>người</td><td><button onclick="speakWord('人')">🔊</button></td></tr>
+          <tr><td>y</td><td>一</td><td>yī</td><td>Thanh 1</td><td>một</td><td><button onclick="speakWord('一')">🔊</button></td></tr>
+          <tr><td>w</td><td>我</td><td>wǒ</td><td>Thanh 3</td><td>tôi</td><td><button onclick="speakWord('我')">🔊</button></td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/pinyin-pro@3.26.0/dist/index.js"></script>
   <script>
