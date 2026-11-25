@@ -69,9 +69,7 @@
       transition: 0.2s ease;
     }
 
-    button:hover {
-      background: var(--primary-dark);
-    }
+    button:hover { background: var(--primary-dark); }
 
     #result {
       margin-top: 12px;
@@ -83,6 +81,33 @@
       font-style: italic;
       font-weight: 600;
     }
+
+    .pinyin-result {
+      margin-top: 8px;
+      padding: 10px 12px;
+      border-left: 4px solid var(--primary);
+      background: var(--panel-soft);
+      color: var(--primary-dark);
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 1.5;
+    }
+
+    .ime-note {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin: 14px 0 0;
+      padding: 12px 14px;
+      border: 1px solid #f6c453;
+      border-radius: 10px;
+      background: #fff8df;
+      color: #6e5400;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .ime-note-icon { font-size: 20px; }
 
     .reference-panel {
       width: 90%;
@@ -147,9 +172,7 @@
       font-size: 14px;
     }
 
-    tr:nth-child(even) td {
-      background: #f8faff;
-    }
+    tr:nth-child(even) td { background: #f8faff; }
 
     td:nth-child(4) {
       font-weight: 700;
@@ -171,129 +194,9 @@
       border-radius: 6px;
     }
 
-    .ime-box {
-      width: 70%;
-      max-width: 900px;
-      margin: 24px auto 0;
-      background: var(--panel-soft);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 18px;
-      box-sizing: border-box;
-      box-shadow: 0 3px 10px var(--shadow);
-    }
-
-    .ime-box h3 {
-      margin: 0 0 12px;
-      color: var(--primary-dark);
-    }
-
-    .helper {
-      color: var(--primary);
-      margin-bottom: 10px;
-      font-size: 14px;
-    }
-
-    .actions {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 8px;
-    }
-
-    .actions button {
-      margin-top: 0;
-    }
-
-    .ime-input-wrap {
-      width: 100%;
-      background: #f3f3f3;
-      border: 1px solid #d9d9d9;
-      border-radius: 4px;
-      padding: 10px 12px 6px;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.3);
-    }
-
-    #pinyinInput {
-      border: none;
-      background: transparent;
-      padding: 0;
-      margin: 0;
-      min-height: 44px;
-      font-size: 32px;
-      line-height: 1.2;
-      color: #1f1f1f;
-      border-radius: 0;
-      box-shadow: none;
-      outline: none;
-      border-bottom: 2px solid var(--primary);
-    }
-
-    #pinyinInput:focus {
-      border-color: var(--primary);
-      box-shadow: none;
-    }
-
-    .candidate-list {
-      margin-top: 10px;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 10px 14px;
-      min-height: 28px;
-      font-size: 16px;
-      color: #202020;
-    }
-
-    .candidate-item {
-      background: transparent;
-      color: #1f1f1f;
-      border: none;
-      padding: 0;
-      margin: 0;
-      min-width: 0;
-      font-size: 16px;
-      line-height: 1.5;
-      font-weight: 500;
-      border-radius: 0;
-      box-shadow: none;
-    }
-
-    .candidate-item .index {
-      color: var(--primary);
-      font-weight: 700;
-      margin-right: 2px;
-    }
-
-    .candidate-item:hover {
-      background: transparent;
-      color: var(--primary-dark);
-      text-decoration: underline;
-    }
-
-    .output-chinese {
-      margin-top: 14px;
-      font-size: 34px;
-      color: var(--primary-dark);
-      font-weight: bold;
-      min-height: 48px;
-    }
-
-    .hint {
-      margin-top: 8px;
-      color: var(--muted);
-      font-size: 13px;
-    }
-
     @media (max-width: 900px) {
-      .search-box,
-      .ime-box {
-        width: 90%;
-      }
-
-      .phonetic-grid {
-        grid-template-columns: 1fr;
-      }
+      .search-box { width: 90%; }
+      .phonetic-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -303,27 +206,13 @@
   <div class="search-box">
     <textarea id="textInput" rows="3" placeholder="请输入中文词或句子..."></textarea>
     <button onclick="processInput()">发音 + 翻译</button>
+
+    <div class="ime-note" role="note">
+      <span class="ime-note-icon">📝</span>
+      <span><strong>Gợi ý:</strong> Vui lòng tải phần mềm Sogou hoặc chuyển đổi typing tiếng Trung để tra cứu từ vựng/câu văn.</span>
+    </div>
+
     <div id="result"></div>
-  </div>
-
-  <div class="ime-box">
-    <h3>⌨️ IME tiếng Trung nâng cao</h3>
-    <div class="helper">Gõ: nihao, ni hao, xiexie, woaini. Chọn bằng phím 1-9.</div>
-
-    <div class="ime-input-wrap">
-      <input id="pinyinInput" type="text" placeholder="Ví dụ: nihao hoặc ni hao" autocorrect="off" autocomplete="off" spellcheck="false" />
-    </div>
-
-    <div class="candidate-list" id="candidateList"></div>
-
-    <div class="actions">
-      <button onclick="convertAdvancedIme()">Chuyển chữ Hán</button>
-      <button onclick="speakConvertedText()">Phát âm</button>
-      <button onclick="clearIme()">Xóa</button>
-    </div>
-
-    <div class="output-chinese" id="outputChinese"></div>
-    <div class="hint">Ví dụ: nihao → 你好, xiexie → 谢谢, woaini → 我爱你</div>
   </div>
 
   <div class="reference-panel">
@@ -371,7 +260,7 @@
           <tr><td>q</td><td>请</td><td>qǐng</td><td>Thanh 3</td><td>mời</td><td><button onclick="speakWord('请')">🔊</button></td></tr>
           <tr><td>x</td><td>小</td><td>xiǎo</td><td>Thanh 3</td><td>nhỏ</td><td><button onclick="speakWord('小')">🔊</button></td></tr>
           <tr><td>z</td><td>字</td><td>zì</td><td>Thanh 4</td><td>chữ</td><td><button onclick="speakWord('字')">🔊</button></td></tr>
-          <tr><td>zh</td><td>中国</td><td>Zhōngguó</td><td>Thanh 1 + 2</td><td>Trung Quốc</td><td><button onclick="speakWord('中国')">🔊</button></td></tr>
+          <tr><td>zh</td><td>中国</td><td>zhōngguó</td><td>Thanh 1 + 2</td><td>Trung Quốc</td><td><button onclick="speakWord('中国')">🔊</button></td></tr>
           <tr><td>ch</td><td>吃</td><td>chī</td><td>Thanh 1</td><td>ăn</td><td><button onclick="speakWord('吃')">🔊</button></td></tr>
           <tr><td>sh</td><td>是</td><td>shì</td><td>Thanh 4</td><td>là</td><td><button onclick="speakWord('是')">🔊</button></td></tr>
           <tr><td>r</td><td>人</td><td>rén</td><td>Thanh 2</td><td>người</td><td><button onclick="speakWord('人')">🔊</button></td></tr>
@@ -384,217 +273,6 @@
 
   <script src="https://cdn.jsdelivr.net/npm/pinyin-pro@3.26.0/dist/index.js"></script>
   <script>
-    const advancedDictionary = {
-      'nihao': ['你好', '你好吗'],
-      'ni hao': ['你好', '你好吗'],
-      'xiexie': ['谢谢'],
-      'xie xie': ['谢谢'],
-      'woaini': ['我爱你'],
-      'wo ai ni': ['我爱你'],
-      'zaijian': ['再见'],
-      'zai jian': ['再见'],
-      'laoshi': ['老师'],
-      'dao': ['到', '倒'],
-      'shangke': ['上课'],
-      'shang ke': ['上课'],
-      'xiake': ['下课'],
-      'xia ke': ['下课'],
-      'gaoxing': ['高兴'],
-      'jia you': ['加油'],
-      'mingtian': ['明天'],
-      'ming tian': ['明天'],
-      'jin tian': ['今天'],
-      'zuo tian': ['昨天'],
-      'zhongguo': ['中国'],
-      'zhong guo': ['中国'],
-      'yin yue': ['音乐'],
-      'diannao': ['电脑'],
-      'ta men': ['他们'],
-      'ren': ['人'],
-      'shi': ['是'],
-      'ma': ['吗'],
-      'hao': ['好'],
-      'nimen': ['你们'],
-      'wo': ['我'],
-      'ni': ['你', '泥', '妮', '呢', '尼'],
-      'xie': ['写', '些', '谢', '斜', '鞋'],
-      'ai': ['爱', '哀', '矮'],
-      'zai': ['在', '再', '灾'],
-      'jian': ['见', '间', '件', '建'],
-      'shang': ['上', '商', '赏'],
-      'ke': ['可', '课', '克', '客'],
-      'lao': ['老', '捞', '牢'],
-      'xin': ['新', '心', '信'],
-      'zhong': ['中', '钟', '重'],
-      'guo': ['国', '果', '过']
-    };
-
-    const pinyinInput = document.getElementById('pinyinInput');
-    const candidateListEl = document.getElementById('candidateList');
-    const outputEl = document.getElementById('outputChinese');
-    let currentCandidates = [];
-
-    function normalizeInput(value) {
-      return value
-        .trim()
-        .toLowerCase()
-        .replace(/[\u0300-\u036f]/g, '')
-        .replace(/ü/g, 'v')
-        .replace(/\s+/g, ' ')
-        .trim();
-    }
-
-    function getExactMatch(raw) {
-      const clean = normalizeInput(raw);
-      if (!clean) return [];
-
-      if (advancedDictionary[clean]) {
-        return advancedDictionary[clean];
-      }
-
-      const spaceLess = clean.replace(/\s+/g, '');
-      if (advancedDictionary[spaceLess]) {
-        return advancedDictionary[spaceLess];
-      }
-
-      return [];
-    }
-
-    function getCandidates(raw) {
-      const clean = normalizeInput(raw);
-      if (!clean) return [];
-
-      const exact = getExactMatch(clean);
-      if (exact.length) return exact;
-
-      const tokens = clean.split(/\s+/).filter(Boolean);
-      if (tokens.length > 1) {
-        const combined = tokens.join(' ');
-        const phraseCandidates = getExactMatch(combined);
-        if (phraseCandidates.length) return phraseCandidates;
-      }
-
-      const prefixMatches = Object.keys(advancedDictionary)
-        .filter(key => key.startsWith(clean) || clean.startsWith(key) || key.replace(/\s+/g, '').startsWith(clean.replace(/\s+/g, '')))
-        .slice(0, 8);
-
-      if (prefixMatches.length) {
-        const result = [];
-        prefixMatches.forEach(key => {
-          advancedDictionary[key].forEach(item => result.push(item));
-        });
-        return [...new Set(result)].slice(0, 9);
-      }
-
-      if (tokens.length > 1) {
-        const built = tokens.map(token => {
-          const arr = advancedDictionary[token] || [token];
-          return arr[0];
-        }).join('');
-        return built ? [built] : [];
-      }
-
-      const single = advancedDictionary[clean];
-      return single ? single : [];
-    }
-
-    function renderCandidates(items) {
-      currentCandidates = items.slice(0, 9);
-      candidateListEl.innerHTML = '';
-
-      if (!currentCandidates.length) {
-        return;
-      }
-
-      currentCandidates.forEach((item, index) => {
-        const button = document.createElement('button');
-        button.className = 'candidate-item';
-        button.type = 'button';
-        button.innerHTML = `<span class="index">${index + 1}.</span>${item}`;
-        button.addEventListener('click', () => applyCandidate(item));
-        candidateListEl.appendChild(button);
-      });
-    }
-
-    function applyCandidate(value) {
-      outputEl.textContent = value;
-      pinyinInput.value = value;
-      speakWord(value);
-    }
-
-    function convertAdvancedIme() {
-      const raw = pinyinInput.value;
-      const normalized = normalizeInput(raw);
-      let result = getCandidates(normalized);
-
-      if (!result.length && window.pinyinPro && typeof window.pinyinPro.convert === 'function') {
-        try {
-          const libValue = window.pinyinPro.convert(normalized) || '';
-          if (libValue) {
-            result = [libValue];
-          }
-        } catch (err) {
-          result = [];
-        }
-      }
-
-      if (!result.length) {
-        const tokens = normalized.split(/\s+/).filter(Boolean);
-        if (tokens.length) {
-          const built = tokens.map(token => {
-            const list = advancedDictionary[token] || [token];
-            return list[0];
-          }).join('');
-          if (built) result = [built];
-        }
-      }
-
-      outputEl.textContent = result[0] || 'Không có kết quả';
-      renderCandidates(result);
-    }
-
-    function clearIme() {
-      pinyinInput.value = '';
-      outputEl.textContent = '';
-      candidateListEl.innerHTML = '';
-      currentCandidates = [];
-    }
-
-    function speakConvertedText() {
-      const text = outputEl.textContent.trim();
-      if (!text || text === 'Không có kết quả') return;
-      speakWord(text);
-    }
-
-    pinyinInput.addEventListener('input', () => {
-      const raw = pinyinInput.value;
-      const normalized = normalizeInput(raw);
-      if (!normalized) {
-        candidateListEl.innerHTML = '';
-        outputEl.textContent = '';
-        return;
-      }
-
-      const result = getCandidates(normalized);
-      renderCandidates(result);
-      if (result.length) {
-        outputEl.textContent = result[0];
-      }
-    });
-
-    document.addEventListener('keydown', (event) => {
-      const target = event.target;
-      const isTyping = target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA');
-
-      if (isTyping) return;
-
-      const key = Number(event.key);
-      if (key >= 1 && key <= 9 && currentCandidates[key - 1]) {
-        event.preventDefault();
-        applyCandidate(currentCandidates[key - 1]);
-      }
-    });
-
     async function processInput() {
       const text = document.getElementById('textInput').value.trim();
       if (!text) return;
@@ -605,35 +283,43 @@
         window.speechSynthesis.speak(utterance);
       }
 
+      let pinyinText = '';
+      if (window.pinyinPro && typeof window.pinyinPro.pinyin === 'function') {
+        pinyinText = window.pinyinPro.pinyin(text, {
+          toneType: 'symbol',
+          type: 'array'
+        }).join(' ');
+      }
+
       let translationText = '(không dịch được)';
 
       try {
         const transResponse = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=zh|vi`);
-        if (!transResponse.ok) {
-          throw new Error('Translation API error');
-        }
+        if (!transResponse.ok) throw new Error('Translation API error');
 
         const transData = await transResponse.json();
         const translated = transData?.responseData?.translatedText;
-        if (translated) {
-          translationText = translated;
-        }
+        if (translated) translationText = translated;
       } catch (err) {
         translationText = '(không dịch được)';
       }
 
       const resultBox = document.getElementById('result');
       resultBox.innerHTML = '';
+
       const translationEl = document.createElement('div');
       translationEl.className = 'translation';
       translationEl.textContent = `📖 Dịch: ${translationText}`;
       resultBox.appendChild(translationEl);
+
+      const pinyinEl = document.createElement('div');
+      pinyinEl.className = 'pinyin-result';
+      pinyinEl.textContent = pinyinText ? `/ ${pinyinText} /` : '/ Không tạo được phiên âm /';
+      resultBox.appendChild(pinyinEl);
     }
 
     function speakWord(word) {
-      if (!word || !('speechSynthesis' in window)) {
-        return;
-      }
+      if (!word || !('speechSynthesis' in window)) return;
 
       const utterance = new SpeechSynthesisUtterance(String(word));
       utterance.lang = 'zh-CN';
